@@ -33,3 +33,7 @@ message IdAndStoreInput {
   string id = 1;
   string storeId = 2;
 }
+
+message Name {
+  string name = 1;
+}

@@ -9,7 +9,7 @@ import {
 import { IdInput } from 'common/dto';
 
 @Controller('categories')
-export class CategoryController {
+export class CategoryGrpcController {
   constructor(private readonly service: CategoryService) {}
 
   @GrpcMethod('CategoryService')

@@ -2,30 +2,33 @@ syntax = "proto3";
 
 package product;
 
-message Status {
-  bool success = 1;
-}
-
-message Id {
-  string id = 1;
-}
-
-message Name {
-  string name = 1;
-}
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "common.proto";
 
 message ProductInput {
   string name = 1;
-  string description = 2;
-  string category_id = 3;
-  repeated string tags = 4;
+  optional string description = 2;
+  optional string image = 3;
+  string category_id = 4;
+  string sku = 5;
+  int32 price = 6;
+  int32 stock = 7;
+  map<string, google.protobuf.Value> attributes = 8;
+  repeated string tags = 9;
+  
 }
 
 message PartialProductInput {
   optional string name = 1;
   optional string description = 2;
-  optional string category_id = 3;
-  repeated string tags = 4;
+  optional string image = 3;
+  optional string category_id = 4;
+  optional string sku = 5;
+  optional int32 price = 6;
+  map<string, google.protobuf.Value> attributes = 7;
+  repeated string tags = 8;
 }
 
 message CreateProductInput {
@@ -38,12 +41,6 @@ message UpdateProductInput {
   PartialProductInput data = 2;
 }
 
-message ProductStore {
-  string id= 1;
-  string name = 2;
-  string logo = 3;
-}
-
 message ProductCategory {
   string id = 1;
   string name = 2;
@@ -52,27 +49,23 @@ message ProductCategory {
 message Product{
   string id = 1;
   string name = 2;
-  string description = 3;
-  string category_id = 4;
+  optional string description = 3;
+  optional string image = 4;
   string store_id = 5;
-  string created_at = 6;
-  string updated_at = 7;
-}
-
-message ProductWithRelationships{
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  ProductStore store = 4;
-  ProductCategory category = 5;
-  string created_at = 7;
-  string updated_at = 8;
+  string category_id = 6;
+  string sku = 7;
+  int32 price = 8;
+  int32 stock = 9;
+  map<string, google.protobuf.Value> attributes = 10;
+  repeated string tags = 11;
+  ProductCategory category = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp deleted_at = 14;
 }
 
 message ProductList {
   repeated Product products = 1;
 }
-
 
 message ProductOrderBy {
   optional string name = 1; // Sort by key
@@ -93,10 +86,10 @@ message ListProductByRelationInput {
 
 service ProductService {
   rpc Create (CreateProductInput) returns (Product) {}
-  rpc Get (Id) returns (ProductWithRelationships) {}
+  rpc Get (common.Id) returns (Product) {}
   rpc ListStoreProducts (ListProductByRelationInput) returns (ProductList) {}
   rpc ListCategoryProducts (ListProductByRelationInput) returns (ProductList) {}
   rpc List (ListProductInput) returns (ProductList) {}
-  rpc Update (UpdateProductInput) returns (Status) {}
-  rpc Delete (Id) returns (Status) {}
+  rpc Update (UpdateProductInput) returns (common.Status) {}
+  rpc Delete (common.Id) returns (common.Status) {}
 }
