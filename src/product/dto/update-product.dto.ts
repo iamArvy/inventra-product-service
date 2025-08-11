@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { UpdateInput } from 'src/common/dto';
 
 export class UpdateProductDto {
   @IsString()
@@ -83,3 +84,5 @@ export class UpdateProductDto {
   })
   tags?: string[];
 }
+
+export class UpdateProductInput extends UpdateInput<UpdateProductDto> {}

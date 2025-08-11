@@ -1,4 +1,10 @@
-import { UpdateProductDto, CreateProductDto, ProductDto } from './dto';
+import {
+  UpdateProductDto,
+  CreateProductDto,
+  ProductDto,
+  CreateProductInput,
+  ProductQueryDto,
+} from './dto';
 import {
   Body,
   Controller,
@@ -10,9 +16,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { FilterParams } from 'src/common/types/filter-params';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Product')
 @Controller('products')
 export class ProductHttpController {
   constructor(private readonly service: ProductService) {}
@@ -24,32 +35,30 @@ export class ProductHttpController {
   @ApiNotFoundResponse({
     description: 'Category not found',
   })
-  @Put('store/:id/create')
+  @ApiBody({
+    type: CreateProductInput,
+    description: 'Product data to create',
+  })
+  @Put('create')
   create(
-    @Param('id') id: string,
-    @Body() data: CreateProductDto,
+    @Body('storeId') id: string,
+    @Body('data') data: CreateProductDto,
   ): Promise<ProductDto> {
     return this.service.create(id, data);
   }
 
+  @ApiOkResponse({
+    description: 'Create a new product',
+    type: ProductDto,
+  })
   @Get('get/:id')
   get(@Param('id') id: string) {
     return this.service.get(id);
   }
 
-  @Get('list/store/:id')
-  listStoreProducts(@Param('id') id: string, @Query() params: FilterParams) {
-    return this.service.listStoreProducts(id, params);
-  }
-
-  @Get('list/category/:id')
-  listCategoryProducts(@Param('id') id: string, @Query() params: FilterParams) {
-    return this.service.listProductsByCategory(id, params);
-  }
-
   @Get('list')
-  list(@Query() params: FilterParams) {
-    return this.service.listProducts(params);
+  list(@Query() query: ProductQueryDto) {
+    return this.service.list(query);
   }
 
   @Patch('update')

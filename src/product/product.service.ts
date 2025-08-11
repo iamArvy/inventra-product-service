@@ -1,11 +1,18 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateProductDto, ProductDto, UpdateProductDto } from './dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import {
+  CreateProductDto,
+  ProductDto,
+  ProductQueryDto,
+  UpdateProductDto,
+} from './dto';
 import { ProductRepository } from 'src/product/product.repository';
-import { FilterParams } from 'src/common/types/filter-params';
-import { IProductService } from './interfaces/product.service.interface';
 
 @Injectable()
-export class ProductService implements IProductService {
+export class ProductService {
   constructor(private repo: ProductRepository) {}
 
   async get(id: string) {
@@ -13,18 +20,8 @@ export class ProductService implements IProductService {
     return ProductDto.from(product);
   }
 
-  async listProducts(data: FilterParams) {
-    return ProductDto.fromMany(await this.repo.list(data));
-  }
-
-  async listProductsByCategory(category_id: string, data: FilterParams) {
-    return ProductDto.fromMany(
-      await this.repo.listByCategory(category_id, data),
-    );
-  }
-
-  async listStoreProducts(id: string, data: FilterParams) {
-    return ProductDto.fromMany(await this.repo.listByStore(id, data));
+  async list(query: ProductQueryDto) {
+    return await this.repo.list(query);
   }
 
   async create(store_id: string, data: CreateProductDto) {
@@ -40,7 +37,10 @@ export class ProductService implements IProductService {
   }
 
   async delete(id: string) {
-    await this.repo.findByIdOrThrow(id);
+    const product = await this.repo.findByIdOrThrow(id);
+    if (product.deletedAt) {
+      throw new BadRequestException('Product already deleted');
+    }
     await this.repo.delete(id);
     return { success: true };
   }

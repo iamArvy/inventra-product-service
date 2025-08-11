@@ -1,4 +1,5 @@
 import { Expose, plainToInstance, Transform } from 'class-transformer';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { CategoryDocument } from 'src/category/category.schema';
 export class CategoryDto {
   @Expose()
@@ -14,8 +15,9 @@ export class CategoryDto {
   @Expose()
   image?: string;
 
+  @IsNotEmpty()
   @Expose()
-  @Transform(({ obj }: { obj: CategoryDocument }) => obj.store_id.toString())
+  @IsString()
   store_id: string;
 
   @Expose()

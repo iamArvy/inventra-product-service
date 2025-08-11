@@ -1,23 +1,30 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Category } from '../category/category.schema';
-
+import * as mongoosePaginate from 'mongoose-paginate-v2';
+import { Factory } from 'nestjs-seeder';
+import type { Faker } from '@faker-js/faker';
 export type ProductDocument = HydratedDocument<Product>;
 
 @Schema({ timestamps: true, collection: 'products' })
 export class Product {
+  @Factory((faker: Faker) => faker.commerce.productName())
   @Prop({ type: String, required: true })
   name: string;
 
+  @Factory((faker: Faker) => faker.commerce.productDescription())
   @Prop({ type: String })
   description?: string;
 
+  @Factory((faker: Faker) => faker.image.url())
   @Prop({ type: String })
   image?: string;
 
+  @Factory((faker: Faker) => faker.string.alphanumeric(10))
   @Prop({ type: String, required: true })
   sku: string;
 
+  @Factory((faker: Faker) => faker.string.uuid())
   @Prop({ type: String, required: true })
   store_id: string;
 
@@ -28,15 +35,27 @@ export class Product {
   })
   category: Category;
 
+  @Factory((faker: Faker) => [
+    faker.string.alpha({ length: 5, casing: 'lower' }),
+    faker.string.alpha({ length: 5, casing: 'lower' }),
+    faker.string.alpha({ length: 5, casing: 'lower' }),
+  ])
   @Prop({ type: [String], default: [] })
   tags: string[];
 
+  @Factory((faker: Faker) => faker.commerce.price({ min: 1, max: 1000 }))
   @Prop({ type: Number, default: 0 })
   price: number;
 
+  @Factory((faker: Faker) => ({
+    color: faker.color.human(),
+    size: faker.helpers.arrayElement(['S', 'M', 'L', 'XL']),
+    material: faker.helpers.arrayElement(['cotton', 'polyester', 'wool']),
+  }))
   @Prop({ type: Object, default: {} })
   attributes: Record<string, any>;
 
+  @Factory((faker: Faker) => faker.number.int({ min: 0, max: 100 }))
   @Prop({ type: Number, default: 0 })
   stock: number;
 
@@ -45,7 +64,7 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
-
+ProductSchema.plugin(mongoosePaginate);
 ProductSchema.index({ sku: 1, store_id: 1 }, { unique: true });
 ProductSchema.index({ deletedAt: 1 });
 ProductSchema.index({ category: 1 });

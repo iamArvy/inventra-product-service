@@ -3,15 +3,22 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProductDto, UpdateProductDto } from './dto';
+import {
+  CreateProductDto,
+  ProductDto,
+  ProductQueryDto,
+  UpdateProductDto,
+} from './dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Product } from './product.schema';
-import { Model, Types } from 'mongoose';
-import { FilterParams } from 'src/common/types/filter-params';
+import { Product, ProductDocument } from './product.schema';
+import { PaginateModel, Types } from 'mongoose';
+import { SortOrder } from 'src/common/dto';
 
 @Injectable()
 export class ProductRepository {
-  constructor(@InjectModel(Product.name) private model: Model<Product>) {}
+  constructor(
+    @InjectModel(Product.name) private model: PaginateModel<ProductDocument>,
+  ) {}
   create(store_id: string, data: CreateProductDto) {
     console.log('Creating product with data:', store_id);
     return this.model.create({
@@ -51,30 +58,31 @@ export class ProductRepository {
       .exec();
   }
 
-  list(params?: FilterParams) {
-    const { where = {}, orderBy = {}, skip = 0, take = 10 } = params ?? {};
-    return this.model.find(where).sort(orderBy).skip(skip).limit(take).exec();
-  }
+  async list(query: ProductQueryDto) {
+    const sortField = query?.sortBy ?? 'createdAt'; // default fallback
+    const sortOrder = query?.order === SortOrder.DESC ? -1 : 1;
+    const options = {
+      page: query?.page ?? 1,
+      limit: query?.pageSize ?? 10,
+      sort: { [sortField]: sortOrder },
+    };
 
-  listByStore(store_id: string, params?: FilterParams) {
-    const { where = {}, orderBy = {}, skip = 0, take = 10 } = params ?? {};
-    return this.model
-      .find({ ...where, store_id })
-      .sort(orderBy)
-      .skip(skip)
-      .limit(take)
-      .exec();
-  }
+    const filter = {} as Record<string, any>;
+    if (query.name) filter.name = query.name;
+    if (query.sku) filter.sku = query.sku;
+    if (query.categoryId) filter.category = query.categoryId;
+    if (query.storeId) filter.store_id = query.storeId;
+    if (query.deleted)
+      filter.deletedAt = query.deleted ? { $exists: true } : { $exists: false };
+    // if (query.includeDeleted)
+    //   filter.deleted_at = { $exists: true };
 
-  listByCategory(category_id: string, params?: FilterParams) {
-    const { where = {}, orderBy = {}, skip = 0, take = 10 } = params ?? {};
-
-    return this.model
-      .find({ ...where, category_id })
-      .sort(orderBy)
-      .skip(skip)
-      .limit(take)
-      .exec();
+    const result = await this.model.paginate(this.model.find(filter), options);
+    const mappedDocs = ProductDto.fromMany(result.docs);
+    return {
+      ...result,
+      docs: mappedDocs,
+    };
   }
 
   update(id: string, data: UpdateProductDto) {
@@ -82,8 +90,9 @@ export class ProductRepository {
   }
 
   delete(id: string) {
+    console.log('Deleting product with ID:', id);
     return this.model.findByIdAndUpdate(id, {
-      deleted_at: new Date(),
+      deletedAt: new Date(),
     });
   }
 }

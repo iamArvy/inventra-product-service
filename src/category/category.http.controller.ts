@@ -9,13 +9,15 @@ import {
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, PartialCategoryInput } from './dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Category')
 @Controller('categories')
 export class CategoryHttpController {
   constructor(private readonly service: CategoryService) {}
 
-  @Put('create/store/:id')
-  create(@Param('id') id: string, @Body() data: CreateCategoryDto) {
+  @Put('create')
+  create(@Body('id') id: string, @Body('data') data: CreateCategoryDto) {
     return this.service.create(id, data);
   }
 
