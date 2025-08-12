@@ -8,11 +8,11 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  IsUUID,
 } from 'class-validator';
 import { Types } from 'mongoose';
+import { StoreId } from 'src/common/dto';
 
-export class CreateProductDto {
+export class CreateProductDto extends StoreId {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
@@ -92,22 +92,4 @@ export class CreateProductDto {
     required: false,
   })
   tags?: string[];
-}
-
-export class CreateProductInput {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'ID of the store where the product is listed',
-    example: 'store_123',
-  })
-  @IsUUID()
-  storeId: string;
-
-  @ApiProperty({
-    description: 'Data for creating the product',
-    type: CreateProductDto,
-  })
-  @IsDefined()
-  data: CreateProductDto;
 }

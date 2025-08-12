@@ -1,18 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Category } from 'src/category/category.schema';
-import { Model, Types } from 'mongoose';
+import { Category, CategoryDocument } from 'src/category/category.schema';
+import { FilterQuery, PaginateModel, PaginateOptions, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateCategoryDto, UpdateCategoryDto } from './dto';
+import { UpdateCategoryDto } from './dto';
 
 @Injectable()
 export class CategoryRepository {
-  constructor(@InjectModel(Category.name) private model: Model<Category>) {}
+  constructor(
+    @InjectModel(Category.name) private model: PaginateModel<CategoryDocument>,
+  ) {}
 
-  create(store_id: string, data: CreateCategoryDto) {
-    return this.model.create({
-      ...data,
-      store_id,
-    });
+  create(data: Category) {
+    return this.model.create(data);
   }
 
   findById(id: string) {
@@ -45,12 +44,8 @@ export class CategoryRepository {
       .exec();
   }
 
-  list() {
-    return this.model.find().exec();
-  }
-
-  listByStore(store_id: string) {
-    return this.model.find({ store_id }).exec();
+  list(filter: FilterQuery<Category>, options: PaginateOptions) {
+    return this.model.paginate(this.model.find(filter), options);
   }
 
   update(id: string, data: UpdateCategoryDto) {

@@ -35,15 +35,3 @@ export class CategoryDto {
     });
   }
 }
-
-// export class CreateCategoryDto {
-//   name: string;
-//   description?: string;
-//   image?: string;
-// }
-
-export class UpdateCategoryDto {
-  name?: string;
-  description?: string;
-  image?: string;
-}

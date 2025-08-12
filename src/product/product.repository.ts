@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDocument } from './product.schema';
-import { FilterQuery, PaginateModel, UpdateQuery } from 'mongoose';
+import {
+  FilterQuery,
+  PaginateModel,
+  PaginateOptions,
+  UpdateQuery,
+} from 'mongoose';
 
 @Injectable()
 export class ProductRepository {
@@ -44,8 +49,12 @@ export class ProductRepository {
       .exec();
   }
 
-  list(filter: FilterQuery<Product>, options: any) {
+  list(filter: FilterQuery<Product>, options: PaginateOptions) {
     return this.model.paginate(this.model.find(filter), options);
+  }
+
+  count(filter: FilterQuery<Product>) {
+    return this.model.countDocuments(filter).exec();
   }
 
   update(id: string, data: UpdateQuery<Product>) {

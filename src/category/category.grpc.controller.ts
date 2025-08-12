@@ -2,50 +2,42 @@ import { Controller } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
-  CreateCategoryInput,
-  UpdateCategoryInput,
-  ListCategoryByRelationInput,
+  CategoryQueryDto,
+  CategoryDto,
+  PaginatedCategoryDto,
+  GrpcUpdateCategoryDto,
+  CreateCategoryDto,
 } from './dto';
 import { IdInput } from 'common/dto';
+import { runRpcMethod } from 'src/common/helpers/run-rpc-method';
+import { Status } from 'src/common/dto/app.response';
 
 @Controller('categories')
 export class CategoryGrpcController {
   constructor(private readonly service: CategoryService) {}
 
   @GrpcMethod('CategoryService')
-  create({ store_id, data }: CreateCategoryInput) {
-    return this.service.create(store_id, data);
+  create(data: CreateCategoryDto) {
+    return runRpcMethod<CategoryDto>(this.service.create(data));
   }
 
   @GrpcMethod('CategoryService')
-  getById({ id }: IdInput) {
-    return this.service.getById(id);
+  get({ id }: IdInput) {
+    return runRpcMethod<CategoryDto>(this.service.get(id));
   }
 
   @GrpcMethod('CategoryService')
-  getByName({ id, name }: { id: string; name: string }) {
-    return this.service.getByName(id, name);
+  async list(query: CategoryQueryDto) {
+    return runRpcMethod<PaginatedCategoryDto>(this.service.list(query));
   }
 
   @GrpcMethod('CategoryService')
-  async list() {
-    const categories = await this.service.list();
-    return { categories };
-  }
-
-  @GrpcMethod('CategoryService')
-  async listStoreCategories({ id }: ListCategoryByRelationInput) {
-    const categories = await this.service.listStoreCategories(id);
-    return { categories };
-  }
-
-  @GrpcMethod('CategoryService')
-  update({ id, data }: UpdateCategoryInput) {
-    return this.service.update(id, data);
+  update({ id, data }: GrpcUpdateCategoryDto) {
+    return runRpcMethod<Status>(this.service.update(id, data));
   }
 
   @GrpcMethod('CategoryService')
   delete({ id }: IdInput) {
-    return this.service.delete(id);
+    return runRpcMethod<Status>(this.service.delete(id));
   }
 }

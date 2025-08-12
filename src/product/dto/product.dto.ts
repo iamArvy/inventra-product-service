@@ -143,35 +143,3 @@ export class ProductDto {
     });
   }
 }
-
-export class PaginatedProductDto {
-  @ApiProperty({ type: [ProductDto] })
-  docs: ProductDto[];
-
-  @ApiProperty()
-  totalDocs: number;
-
-  @ApiProperty()
-  limit: number;
-
-  @ApiProperty()
-  page: number;
-
-  @ApiProperty()
-  totalPages: number;
-
-  @ApiProperty()
-  pagingCounter: number;
-
-  @ApiProperty()
-  hasPrevPage: boolean;
-
-  @ApiProperty()
-  hasNextPage: boolean;
-
-  @ApiProperty({ nullable: true })
-  prevPage: number | null;
-
-  @ApiProperty({ nullable: true })
-  nextPage: number | null;
-}

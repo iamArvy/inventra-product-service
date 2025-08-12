@@ -2,6 +2,7 @@ import { Faker } from '@faker-js/faker/.';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Factory } from 'nestjs-seeder';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
 
 export type CategoryDocument = HydratedDocument<Category>;
 
@@ -25,3 +26,6 @@ export class Category {
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
+CategorySchema.plugin(mongoosePaginate);
+CategorySchema.index({ name: 1, storeId: 1 }, { unique: true });
+CategorySchema.index({ storeId: 1 });

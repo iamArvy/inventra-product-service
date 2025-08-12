@@ -6,45 +6,43 @@ import {
   Param,
   Patch,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto, PartialCategoryInput } from './dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  CategoryDto,
+  CategoryQueryDto,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from './dto';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Category')
 @Controller('categories')
 export class CategoryHttpController {
   constructor(private readonly service: CategoryService) {}
 
+  @ApiOkResponse({
+    description: 'New category created',
+    type: CategoryDto,
+  })
   @Put('create')
-  create(@Body('id') id: string, @Body('data') data: CreateCategoryDto) {
-    return this.service.create(id, data);
+  create(@Body() data: CreateCategoryDto) {
+    return this.service.create(data);
   }
 
   @Get('get/:id')
-  getById(@Param('id') id: string) {
-    return this.service.getById(id);
+  get(@Param('id') id: string) {
+    return this.service.get(id);
   }
-
-  // @Get('get/name/:id/:name')
-  // getByName({ id, name }: { id: string; name: string }) {
-  //   return this.service.getByName(id, name);
-  // }
 
   @Get('list')
-  async list() {
-    const categories = await this.service.list();
-    return { categories };
+  list(@Query() query: CategoryQueryDto) {
+    return this.service.list(query);
   }
 
-  @Get('list/store/:id')
-  async listStoreCategories(@Param('id') id: string) {
-    const categories = await this.service.listStoreCategories(id);
-    return { categories };
-  }
-
-  @Patch('update')
-  update(@Param('id') id: string, @Body() data: PartialCategoryInput) {
+  @Patch('update/:id')
+  update(@Param('id') id: string, @Body() data: UpdateCategoryDto) {
     return this.service.update(id, data);
   }
 

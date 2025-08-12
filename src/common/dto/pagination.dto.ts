@@ -1,6 +1,7 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { PaginateResult } from 'mongoose';
 // Allowed sort orders for number fields
 export enum SortOrder {
   ASC = 'asc',
@@ -35,3 +36,39 @@ export class PaginationDto {
 //   @IsEnum(SortOrder)
 //   order?: SortOrder;
 // }
+export class PaginatedDto<T> implements PaginateResult<T> {
+  @ApiProperty({ type: [Object] })
+  docs: T[];
+
+  @ApiProperty()
+  totalDocs: number;
+
+  @ApiProperty()
+  limit: number;
+
+  @ApiProperty()
+  page?: number;
+
+  @ApiProperty()
+  totalPages: number;
+
+  @ApiProperty()
+  pagingCounter: number;
+
+  @ApiProperty()
+  hasPrevPage: boolean;
+
+  @ApiProperty()
+  hasNextPage: boolean;
+
+  @ApiProperty({ nullable: true })
+  prevPage?: number | null;
+
+  @ApiProperty({ nullable: true })
+  nextPage?: number | null;
+
+  @ApiProperty({ nullable: true })
+  offset: number;
+
+  [customLabel: string]: any; // this is the index signature
+}

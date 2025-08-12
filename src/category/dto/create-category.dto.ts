@@ -1,7 +1,18 @@
+import { faker } from '@faker-js/faker/.';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateCategoryDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'ID of the store',
+    example: faker.string.uuid(),
+  })
+  @IsUUID()
+  storeId: string;
+  store_id: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({

@@ -20,7 +20,13 @@ export class ProductService {
 
   private readonly logger = new Logger(ProductService.name);
 
-  async create(storeId: string, data: CreateProductDto) {
+  /**
+   * Create a new product
+   * @param storeId - ID of the store
+   * @param data - Product input data
+   */
+  async create(data: CreateProductDto) {
+    const { storeId } = data;
     const exists = await this.repo.findByStoreIdAndSku(storeId, data.sku);
     if (exists) {
       throw new BadRequestException('Product with this SKU already exists');
@@ -31,11 +37,15 @@ export class ProductService {
     if (!categoryExists || categoryExists.storeId !== storeId) {
       throw new BadRequestException('Category does not exist');
     }
-    const product = await this.repo.create({ storeId, ...data });
+    const product = await this.repo.create(data);
     this.logger.log(`Product ${product.id} Created in store ${storeId}`);
-    return ProductDto.from(await this.repo.create({ storeId, ...data }));
+    return ProductDto.from(product);
   }
 
+  /**
+   * Get a product by ID
+   * @param id - Product ID
+   */
   async get(id: string) {
     if (!id || !Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid product ID format');
@@ -44,6 +54,10 @@ export class ProductService {
     return ProductDto.from(product);
   }
 
+  /**
+   * List products with optional filtering and pagination
+   * @param query - Product query parameters
+   */
   async list(query: ProductQueryDto) {
     const sortField = query?.sb ?? 'createdAt'; // default fallback
     const sortOrder = query?.order === SortOrder.DESC ? -1 : 1;
@@ -86,6 +100,11 @@ export class ProductService {
     };
   }
 
+  /**
+   * Update a product
+   * @param id - Product ID
+   * @param data - Product update data
+   */
   async update(id: string, data: UpdateProductDto) {
     if (!id || !Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid product ID format');
@@ -122,7 +141,14 @@ export class ProductService {
     return { success: true };
   }
 
+  /**
+   * Delete a product
+   * @param id - Product ID
+   */
   async delete(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     const product = await this.repo.findByIdOrThrow(id);
     if (product.deletedAt) {
       throw new BadRequestException('Product already deleted');
