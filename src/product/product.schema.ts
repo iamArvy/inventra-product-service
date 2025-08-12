@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
-import { Category } from '../category/category.schema';
+import { CategoryDocument } from '../category/category.schema';
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 import { Factory } from 'nestjs-seeder';
 import type { Faker } from '@faker-js/faker';
@@ -33,7 +33,7 @@ export class Product {
     ref: 'Category',
     required: true,
   })
-  category: Types.ObjectId | Category;
+  category: Types.ObjectId | CategoryDocument;
 
   @Factory((faker: Faker) => [
     faker.string.alpha({ length: 5, casing: 'lower' }),

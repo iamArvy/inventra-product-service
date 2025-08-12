@@ -44,7 +44,7 @@ export class CreateProductDto {
   @ApiProperty({
     type: String,
     description: 'ID of the category for product',
-    example: '689a59682318f6eaa0729a1d', // Example ObjectId
+    example: '689a59682318f6eaa0729a1d',
   })
   @IsMongoId()
   category: Types.ObjectId;

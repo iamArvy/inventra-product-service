@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import {
   CreateProductDto,
   ProductDto,
@@ -10,15 +6,40 @@ import {
   UpdateProductDto,
 } from './dto';
 import { ProductRepository } from 'src/product/product.repository';
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { Product } from './product.schema';
 import { SortOrder } from 'src/common/dto';
+import { CategoryRepository } from 'src/category/category.repository';
 
 @Injectable()
 export class ProductService {
-  constructor(private repo: ProductRepository) {}
+  constructor(
+    private repo: ProductRepository,
+    private categoryRepo: CategoryRepository,
+  ) {}
+
+  private readonly logger = new Logger(ProductService.name);
+
+  async create(storeId: string, data: CreateProductDto) {
+    const exists = await this.repo.findByStoreIdAndSku(storeId, data.sku);
+    if (exists) {
+      throw new BadRequestException('Product with this SKU already exists');
+    }
+    const categoryExists = await this.categoryRepo.findById(
+      data.category.toString(),
+    );
+    if (!categoryExists || categoryExists.storeId !== storeId) {
+      throw new BadRequestException('Category does not exist');
+    }
+    const product = await this.repo.create({ storeId, ...data });
+    this.logger.log(`Product ${product.id} Created in store ${storeId}`);
+    return ProductDto.from(await this.repo.create({ storeId, ...data }));
+  }
 
   async get(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     const product = await this.repo.findByIdWithRelationships(id, ['category']);
     return ProductDto.from(product);
   }
@@ -65,19 +86,39 @@ export class ProductService {
     };
   }
 
-  async create(storeId: string, data: CreateProductDto) {
-    const exists = await this.repo.findByStoreIdAndSku(storeId, data.sku);
-    if (exists) {
-      throw new BadRequestException('Product with this SKU already exists');
-    }
-    const product = await this.repo.create({ storeId, ...data });
-    if (!product) throw new InternalServerErrorException('Product Not Created');
-    return ProductDto.from(product);
-  }
-
   async update(id: string, data: UpdateProductDto) {
-    await this.repo.findByIdOrThrow(id);
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
+    const product = await this.repo.findByIdWithRelationships(id, ['category']);
+
+    if (product.deletedAt) {
+      throw new BadRequestException('Product already deleted');
+    }
+
+    if (data.sku && data.sku !== product.sku) {
+      const exists = await this.repo.findByStoreIdAndSku(
+        product.storeId,
+        data.sku,
+      );
+      if (exists && exists.id !== id) {
+        throw new BadRequestException('Product with this SKU already exists');
+      }
+    }
+
+    if (
+      data.category &&
+      data.category.toString() !== product.category._id.toString()
+    ) {
+      const categoryExists = await this.categoryRepo.findByIdOrThrow(
+        data.category,
+      );
+      if (!categoryExists || categoryExists.storeId !== product.storeId) {
+        throw new BadRequestException('Category does not exist');
+      }
+    }
     await this.repo.update(id, data);
+    this.logger.log(`Product ${id} updated`);
     return { success: true };
   }
 
@@ -87,6 +128,7 @@ export class ProductService {
       throw new BadRequestException('Product already deleted');
     }
     await this.repo.delete(id);
+    this.logger.log(`Product ${id} deleted`);
     return { success: true };
   }
 }

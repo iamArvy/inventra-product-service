@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from 'src/category/category.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
@@ -19,7 +19,7 @@ export class CategoryRepository {
     return this.model.findById(id).exec();
   }
 
-  async findByIdOrThrow(id: string) {
+  async findByIdOrThrow(id: string | Types.ObjectId) {
     return this.model
       .findById(id)
       .orFail(new NotFoundException('Category not found'))
