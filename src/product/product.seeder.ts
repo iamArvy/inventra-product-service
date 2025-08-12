@@ -24,7 +24,9 @@ export class ProductsSeeder implements Seeder {
       return {
         ...product,
         category: randomCategory._id, // use the category's _id
-        store_id: randomCategory.store_id, // use the category's store_id
+        storeId: randomCategory.storeId, // use the category's store_id
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
     });
     return this.product.insertMany(productWithRelationship, { lean: true });

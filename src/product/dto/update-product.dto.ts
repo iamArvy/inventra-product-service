@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsInt,
+  IsMongoId,
+  IsNumber,
   IsObject,
   IsOptional,
   IsString,
@@ -39,6 +40,7 @@ export class UpdateProductDto {
     description: 'ID of the category for product',
     example: 'category_123',
   })
+  @IsMongoId()
   category?: string;
 
   @IsString()
@@ -49,21 +51,13 @@ export class UpdateProductDto {
   })
   sku?: string;
 
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   @ApiPropertyOptional({
     description: 'Price of the product',
     example: 999,
   })
   price?: number;
-
-  @IsInt()
-  @IsOptional()
-  @ApiPropertyOptional({
-    description: 'Stock quantity of the product',
-    example: 100,
-  })
-  stock?: number;
 
   @IsOptional()
   @IsObject()

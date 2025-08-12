@@ -21,7 +21,7 @@ export class Category {
 
   @Factory((faker: Faker) => faker.string.uuid())
   @Prop()
-  store_id: string;
+  storeId: string;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

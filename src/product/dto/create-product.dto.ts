@@ -2,12 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsDefined,
-  IsInt,
+  IsMongoId,
   IsNotEmpty,
+  IsNumber,
   IsObject,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateProductDto {
   @IsString()
@@ -39,10 +42,12 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
+    type: String,
     description: 'ID of the category for product',
-    example: 'category_123',
+    example: '689a59682318f6eaa0729a1d', // Example ObjectId
   })
-  category: string;
+  @IsMongoId()
+  category: Types.ObjectId;
 
   @IsString()
   @IsNotEmpty()
@@ -52,7 +57,7 @@ export class CreateProductDto {
   })
   sku: string;
 
-  @IsInt()
+  @IsNumber()
   @IsDefined()
   @ApiProperty({
     description: 'Price of the product',
@@ -60,7 +65,7 @@ export class CreateProductDto {
   })
   price: number;
 
-  @IsInt()
+  @IsNumber()
   @IsDefined()
   @ApiProperty({
     description: 'Stock quantity of the product',
@@ -96,6 +101,7 @@ export class CreateProductInput {
     description: 'ID of the store where the product is listed',
     example: 'store_123',
   })
+  @IsUUID()
   storeId: string;
 
   @ApiProperty({

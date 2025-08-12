@@ -54,7 +54,7 @@ export class ProductDto {
   @IsString()
   @IsNotEmpty()
   @Expose()
-  store_id: string;
+  storeId: string;
 
   @ApiProperty({
     description: 'SKU (Stock Keeping Unit) of the product',
@@ -137,7 +137,7 @@ export class ProductDto {
     });
   }
 
-  static fromMany(data: ProductDocument[]): ProductDto[] {
+  static fromMany(data: Product[]): ProductDto[] {
     return plainToInstance(ProductDto, data, {
       excludeExtraneousValues: true,
     });
