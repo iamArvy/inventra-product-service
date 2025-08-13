@@ -1,13 +1,14 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsDefined,
   IsMongoId,
   IsNumber,
   IsObject,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { UpdateInput } from 'src/common/dto';
+import { IdInput } from 'src/common/dto';
 
 export class UpdateProductDto {
   @IsString()
@@ -38,10 +39,10 @@ export class UpdateProductDto {
   @IsOptional()
   @ApiPropertyOptional({
     description: 'ID of the category for product',
-    example: 'category_123',
+    example: '689a59682318f6eaa0729a1d',
   })
   @IsMongoId()
-  category?: string;
+  categoryId?: string;
 
   @IsString()
   @IsOptional()
@@ -79,4 +80,11 @@ export class UpdateProductDto {
   tags?: string[];
 }
 
-export class UpdateProductInput extends UpdateInput<UpdateProductDto> {}
+export class GrpcUpdateProductDto extends IdInput {
+  @ApiProperty({
+    description: 'Updated Data',
+    type: UpdateProductDto,
+  })
+  @IsDefined()
+  data: UpdateProductDto;
+}

@@ -9,7 +9,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Types } from 'mongoose';
 import { StoreId } from 'src/common/dto';
 
 export class CreateProductDto extends StoreId {
@@ -47,7 +46,7 @@ export class CreateProductDto extends StoreId {
     example: '689a59682318f6eaa0729a1d',
   })
   @IsMongoId()
-  category: Types.ObjectId;
+  categoryId: string;
 
   @IsString()
   @IsNotEmpty()

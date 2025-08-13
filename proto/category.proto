@@ -4,62 +4,65 @@ package product;
 
 import "common.proto";
 
-message CategoryInput {
-  string name = 1;
-  string description = 2;
-}
-
-message PartialCategoryInput {
-  optional string name = 1;
-  optional string description = 2;
-}
-
-message CreateCategoryInput {
-  string store_id = 1;
-  CategoryInput data = 2;
-}
-
-message UpdateCategoryInput {
-  string id = 1;
-  PartialCategoryInput data = 2;
-}
-
-message CategoryOrderBy {
-  optional string name = 1; // Sort by key
-  optional string created_at = 2; // Sort by value
-  optional string updated_at = 3; // Sort by value
-}
-
-message ListCategoryInput {
-  optional CategoryOrderBy orderBy = 1;
-  optional int32 skip = 2; // Number of items to skip for pagination
-  optional int32 take = 3;
-}
-
-message ListCategoryByRelationInput {
-  string id = 1;
-  optional ListCategoryInput params = 2;
+message CreateCategory {
+  string storeId = 1;
+  string name = 2;
+  optional string description = 3;
+  optional string image = 4;
 }
 
 message Category {
   string id = 1;
   string name = 2;
   string description = 3;
-  string store_id = 4;
-  optional string created_at = 5;
-  optional string updated_at = 6;
+  string storeId = 4;
+  string image = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+enum CategorySortBy {
+  NAME = 1;
+  DATE = 2;
+}
+
+message CategoryQuery {
+  optional int32 page = 1;
+  optional int32 pageSize = 2;
+  optional common.SortOrder order = 3;
+  optional CategorySortBy sortBy = 4;
+  optional string name = 5;
+  optional string storeId = 6;
 }
 
 message CategoryList {
-  repeated Category categories = 1;
+  repeated Category docs = 1;
+  int32 totalDocs = 2;
+  int32 limit = 3;
+  optional int32 page = 4;
+  int32 totalPages = 5;
+  int32 pagingCounter = 6;
+  bool hasPrevPage = 7;
+  bool hasNextPage = 8;
+  optional int32 prevPage = 9;
+  optional int32 nextPage = 10;
+  int32 offset = 11;
+}
+
+message PartialCategoryInput {
+  optional string name = 1;
+  optional string description = 2;
+  optional string image = 3;
+}
+
+message UpdateCategory {
+  string id = 1;
+  PartialCategoryInput data = 2;
 }
 
 service CategoryService {
-  rpc Create (CreateCategoryInput) returns (Category) {}
-  rpc GetById (common.Id) returns (Category) {}
-  rpc GetByName (common.Name) returns (Category) {}
-  rpc List (ListCategoryInput) returns (CategoryList) {}
-  rpc ListStoreCategories (ListCategoryByRelationInput) returns (CategoryList) {}
-  rpc Update (UpdateCategoryInput) returns (Category) {}
+  rpc Create (CreateCategory) returns (Category) {}
+  rpc Get (common.Id) returns (Category) {}
+  rpc List (CategoryQuery) returns (CategoryList) {}
+  rpc Update (UpdateCategory) returns (common.Status) {}
   rpc Delete (common.Id) returns (common.Status) {}
 }

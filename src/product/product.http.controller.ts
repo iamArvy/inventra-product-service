@@ -2,7 +2,6 @@ import {
   UpdateProductDto,
   CreateProductDto,
   ProductDto,
-  CreateProductInput,
   ProductQueryDto,
   PaginatedProductDto,
 } from './dto';
@@ -40,7 +39,7 @@ export class ProductHttpController {
       'Category does not exist or Product with this SKU already exists',
   })
   @ApiBody({
-    type: CreateProductInput,
+    type: CreateProductDto,
     description: 'Product data to create',
   })
   @Put('create')
@@ -48,7 +47,7 @@ export class ProductHttpController {
     @Body('storeId') id: string,
     @Body('data') data: CreateProductDto,
   ): Promise<ProductDto> {
-    return this.service.create(id, data);
+    return this.service.create(data);
   }
 
   @ApiOkResponse({

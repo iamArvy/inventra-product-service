@@ -13,7 +13,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PaginationDto } from 'src/common/dto';
-import { Types } from 'mongoose';
 
 export enum ProductSortBy {
   NAME = 'name',
@@ -27,7 +26,7 @@ export class ProductQueryDto extends PaginationDto {
   @ApiPropertyOptional({ enum: ProductSortBy, description: 'Field to sort by' })
   @IsOptional()
   @IsEnum(ProductSortBy)
-  sb: ProductSortBy;
+  sortBy?: ProductSortBy;
 
   @ApiPropertyOptional({ description: 'Name of the product' })
   @IsOptional()
@@ -43,12 +42,12 @@ export class ProductQueryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @IsUUID()
-  sid?: string;
+  storeId?: string;
 
   @ApiPropertyOptional({ type: String, description: 'ID of the category' })
   @IsOptional()
   @IsMongoId()
-  cid?: Types.ObjectId;
+  categoryId?: string;
 
   @ApiPropertyOptional({ description: 'Minimum price of the product' })
   @IsOptional()
@@ -56,7 +55,7 @@ export class ProductQueryDto extends PaginationDto {
   @Min(0)
   @Max(9999999998)
   @Type(() => Number)
-  minP?: number;
+  minPrice?: number;
 
   @ApiPropertyOptional({ description: 'Maximum price of the product' })
   @IsOptional()
@@ -64,20 +63,20 @@ export class ProductQueryDto extends PaginationDto {
   @Max(9999999999)
   @Min(1)
   @Type(() => Number)
-  maxP?: number;
+  maxPrice?: number;
 
   @ApiPropertyOptional({ description: 'Minimum stock of the product' })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Type(() => Number)
-  minS?: number;
+  minStock?: number;
 
   @ApiPropertyOptional({ description: 'Maximum stock of the product' })
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  maxS?: number;
+  maxStock?: number;
 
   @ApiPropertyOptional({
     type: [String],

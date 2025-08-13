@@ -37,3 +37,8 @@ message IdAndStoreInput {
 message Name {
   string name = 1;
 }
+
+enum SortOrder {
+  ASC = 1;
+  DESC = 2;
+}

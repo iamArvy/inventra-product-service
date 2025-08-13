@@ -50,17 +50,18 @@ export class CategoryService {
    * @param query - Category query parameters
    */
   async list(query: CategoryQueryDto) {
-    const sortField = query?.sb ?? 'name';
-    const sortOrder = query?.order === SortOrder.DESC ? -1 : 1;
+    const { sortBy, order, page, pageSize, name, storeId } = query;
+    const sortField = sortBy ?? 'name';
+    const sortOrder = order === SortOrder.DESC ? -1 : 1;
     const options = {
-      page: query?.page ?? 1,
-      limit: query?.pageSize ?? 10,
+      page: page ?? 1,
+      limit: pageSize ?? 10,
       sort: { [sortField]: sortOrder },
     };
 
     const filter: FilterQuery<Category> = {};
-    if (query.name) filter.name = query.name;
-    if (query.sid) filter.storeId = query.sid;
+    if (name) filter.name = query.name;
+    if (storeId) filter.storeId = storeId;
 
     const result = await this.repo.list(filter, options);
     const mappedDocs = CategoryDto.fromMany(result.docs);

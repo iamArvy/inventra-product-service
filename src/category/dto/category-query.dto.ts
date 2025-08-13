@@ -14,7 +14,7 @@ export class CategoryQueryDto extends PaginationDto {
   })
   @IsOptional()
   @IsEnum(CategorySortBy)
-  sb: CategorySortBy;
+  sortBy?: CategorySortBy;
 
   @ApiPropertyOptional({ description: 'Name of the category' })
   @IsOptional()
@@ -25,5 +25,5 @@ export class CategoryQueryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @IsUUID()
-  sid?: string;
+  storeId?: string;
 }

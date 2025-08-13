@@ -1,10 +1,10 @@
 import { IdInput } from 'common/dto';
 import {
-  UpdateProductInput,
   ProductDto,
   ProductQueryDto,
   PaginatedProductDto,
   CreateProductDto,
+  GrpcUpdateProductDto,
 } from './dto';
 import { GrpcMethod } from '@nestjs/microservices';
 import { Controller } from '@nestjs/common';
@@ -32,7 +32,7 @@ export class ProductGrpcController {
   }
 
   @GrpcMethod('ProductService')
-  update({ id, data }: UpdateProductInput) {
+  update({ id, data }: GrpcUpdateProductDto) {
     return runRpcMethod<Status>(this.service.update(id, data));
   }
 

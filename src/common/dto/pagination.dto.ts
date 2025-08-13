@@ -30,12 +30,6 @@ export class PaginationDto {
   order?: SortOrder;
 }
 
-// export class SortDto {
-//   @ApiPropertyOptional({ enum: SortOrder })
-//   @IsOptional()
-//   @IsEnum(SortOrder)
-//   order?: SortOrder;
-// }
 export class PaginatedDto<T> implements PaginateResult<T> {
   @ApiProperty({ type: [Object] })
   docs: T[];
