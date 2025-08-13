@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CategoryModule } from 'category/category.module';
 import { ProductModule } from 'product/product.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,6 +17,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     }),
     CategoryModule,
     ProductModule,
+    RabbitmqModule,
   ],
 })
 export class AppModule {}
