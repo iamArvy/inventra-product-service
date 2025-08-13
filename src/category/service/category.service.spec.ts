@@ -8,6 +8,8 @@ import {
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CategoryDto, CategorySortBy, PaginatedCategoryDto } from '../dto';
 import { SortOrder } from 'src/common/dto';
+import { mockCategoryEvent } from '../event/categpry.event.mock';
+import { CategoryEvent } from '../event';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -25,6 +27,10 @@ describe('CategoryService', () => {
         {
           provide: CategoryRepository,
           useFactory: mockCategoryRepository,
+        },
+        {
+          provide: CategoryEvent,
+          useFactory: mockCategoryEvent,
         },
       ],
     }).compile();

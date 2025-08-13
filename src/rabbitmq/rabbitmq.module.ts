@@ -2,6 +2,8 @@ import { RabbitmqService } from './rabbitmq.service';
 import { Global, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { CategoryEvent } from './events/category';
+import { ProductEvent } from './events/product';
 
 @Module({
   imports: [
@@ -26,8 +28,8 @@ import { ConfigService } from '@nestjs/config';
       },
     ]),
   ],
-  providers: [RabbitmqService],
-  exports: [RabbitmqService],
+  providers: [RabbitmqService, CategoryEvent, ProductEvent],
+  exports: [CategoryEvent, ProductEvent],
 })
 @Global()
 export class MessagingModule {}

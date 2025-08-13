@@ -11,12 +11,14 @@ import { SortOrder } from 'src/common/dto';
 import { FilterQuery } from 'mongoose';
 import { Category } from '../schema';
 import { ProductRepository } from 'src/product/repository';
+import { CategoryEvent } from '../event';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private readonly repo: CategoryRepository,
     private readonly productRepo: ProductRepository,
+    private readonly event: CategoryEvent,
   ) {}
 
   private readonly logger = new Logger(this.constructor.name);
@@ -27,13 +29,16 @@ export class CategoryService {
    * @param data - Category input data
    */
   async create(data: CreateCategoryDto) {
-    const exists = await this.repo.findByName(data.storeId, data.name);
+    const { storeId, name } = data;
+    const exists = await this.repo.findByName(storeId, name);
     if (exists)
       throw new BadRequestException(
         'Category with name already exist for this store',
       );
-    const category = await this.repo.create(data);
-    return CategoryDto.from(category);
+    const category = CategoryDto.from(await this.repo.create(data));
+    this.logger.log(`Category ${category.id} created in store ${storeId}`);
+    this.event.created(category);
+    return category;
   }
 
   /**
@@ -88,6 +93,7 @@ export class CategoryService {
 
     await this.repo.update(id, data);
     this.logger.log(`Category ${id} updated successfully`);
+    this.event.updated(id, data);
     return { success: true };
   }
 
@@ -105,9 +111,9 @@ export class CategoryService {
     }
     await this.repo.delete(id);
     this.logger.log(`Category ${id} deleted successfully`);
+    this.event.deleted(id);
     return { success: true };
   }
 
-  // implement events
   // implement createMany and deleteMany
 }
