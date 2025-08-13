@@ -171,4 +171,7 @@ export class ProductService {
     this.logger.log(`Product ${id} deleted`);
     return { success: true };
   }
+
+  // add events
+  // implement createMany and deleteMany
 }

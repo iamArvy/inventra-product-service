@@ -113,4 +113,7 @@ export class CategoryService {
     this.logger.log(`Category ${id} deleted successfully`);
     return { success: true };
   }
+
+  // implement events
+  // implement createMany and deleteMany
 }
