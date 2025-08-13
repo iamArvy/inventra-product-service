@@ -4,7 +4,7 @@ import {
   ProductDto,
   ProductQueryDto,
   PaginatedProductDto,
-} from './dto';
+} from '../dto';
 import {
   Body,
   Controller,
@@ -15,7 +15,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { ProductService } from '../service/product.service';
 import {
   ApiBadRequestResponse,
   ApiBody,

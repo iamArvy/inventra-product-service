@@ -4,12 +4,12 @@ import {
   ProductDto,
   ProductQueryDto,
   UpdateProductDto,
-} from './dto';
-import { ProductRepository } from 'src/product/product.repository';
+} from '../dto';
+import { ProductRepository } from '../repository';
 import { FilterQuery, Types } from 'mongoose';
-import { Product } from './product.schema';
+import { Product } from '../schema';
 import { SortOrder } from 'src/common/dto';
-import { CategoryRepository } from 'src/category/category.repository';
+import { CategoryRepository } from 'src/category/repository';
 
 @Injectable()
 export class ProductService {
@@ -48,9 +48,6 @@ export class ProductService {
    * @param id - Product ID
    */
   async get(id: string) {
-    if (!id || !Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid product ID format');
-    }
     const product = await this.repo.findByIdWithRelationships(id, ['category']);
     return ProductDto.from(product);
   }

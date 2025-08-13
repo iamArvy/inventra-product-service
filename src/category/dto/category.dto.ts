@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, plainToInstance, Transform } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { CategoryDocument } from 'src/category/category.schema';
+import { CategoryDocument } from 'src/category/schema/category.schema';
 export class CategoryDto {
   @Expose()
   @ApiProperty({

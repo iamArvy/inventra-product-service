@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { CategoryService } from './category.service';
+import { CategoryService } from '../service/category.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   CategoryQueryDto,
@@ -7,7 +7,7 @@ import {
   PaginatedCategoryDto,
   GrpcUpdateCategoryDto,
   CreateCategoryDto,
-} from './dto';
+} from '../dto';
 import { IdInput } from 'common/dto';
 import { runRpcMethod } from 'src/common/helpers/run-rpc-method';
 import { Status } from 'src/common/dto/app.response';

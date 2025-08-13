@@ -1,6 +1,6 @@
 import { CategoryDto } from 'category/dto';
 import { Expose, plainToInstance, Transform, Type } from 'class-transformer';
-import { Product, ProductDocument } from '../product.schema';
+import { Product, ProductDocument } from '../schema';
 import {
   IsDefined,
   IsInt,

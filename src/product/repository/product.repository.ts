@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Product, ProductDocument } from './product.schema';
+import { Product, ProductDocument } from '../schema';
 import {
   FilterQuery,
   PaginateModel,
   PaginateOptions,
+  Types,
   UpdateQuery,
 } from 'mongoose';
 
@@ -19,6 +24,9 @@ export class ProductRepository {
   }
 
   findById(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     return this.model.findById(id).exec();
   }
 
@@ -32,6 +40,9 @@ export class ProductRepository {
   }
 
   findByIdOrThrow(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     return this.model
       .findById(id)
       .orFail(new NotFoundException('Product not found'))
@@ -42,6 +53,9 @@ export class ProductRepository {
     id: string,
     relationships: string[],
   ): Promise<Product> {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     return this.model
       .findById(id)
       .populate(relationships)
@@ -58,10 +72,16 @@ export class ProductRepository {
   }
 
   update(id: string, data: UpdateQuery<Product>) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     return this.model.findByIdAndUpdate(id, data, { new: true }).exec();
   }
 
   delete(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid product ID format');
+    }
     return this.model.findByIdAndUpdate(id, {
       deletedAt: new Date(),
     });

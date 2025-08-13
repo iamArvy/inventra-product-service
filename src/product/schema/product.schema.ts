@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
-import { CategoryDocument } from '../category/category.schema';
+import { CategoryDocument } from 'src/category/schema';
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 import { Factory } from 'nestjs-seeder';
 import type { Faker } from '@faker-js/faker';

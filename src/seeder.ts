@@ -1,9 +1,9 @@
 import { CategoriesSeeder } from './category/category.seeder';
 import { seeder } from 'nestjs-seeder';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Product, ProductSchema } from './product/product.schema';
+import { Product, ProductSchema } from './product/schema';
 import { ProductsSeeder } from './product/product.seeder';
-import { Category, CategorySchema } from './category/category.schema';
+import { Category, CategorySchema } from './category/schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 seeder({

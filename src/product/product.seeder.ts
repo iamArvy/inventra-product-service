@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product } from './product.schema';
+import { Product } from './schema';
 import { Seeder, DataFactory } from 'nestjs-seeder';
-import { Category } from 'src/category/category.schema';
+import { Category } from 'src/category/schema';
 
 @Injectable()
 export class ProductsSeeder implements Seeder {

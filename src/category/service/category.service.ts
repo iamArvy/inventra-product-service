@@ -3,14 +3,14 @@ import {
   CategoryDto,
   CategoryQueryDto,
   CreateCategoryDto,
+  PaginatedCategoryDto,
   UpdateCategoryDto,
-} from './dto';
-import { CategoryRepository } from './category.repository';
+} from '../dto';
+import { CategoryRepository } from '../repository';
 import { SortOrder } from 'src/common/dto';
 import { FilterQuery } from 'mongoose';
-import { Category } from './category.schema';
-import { Types } from 'mongoose';
-import { ProductRepository } from 'src/product/product.repository';
+import { Category } from '../schema';
+import { ProductRepository } from 'src/product/repository';
 
 @Injectable()
 export class CategoryService {
@@ -64,11 +64,12 @@ export class CategoryService {
     if (storeId) filter.storeId = storeId;
 
     const result = await this.repo.list(filter, options);
-    const mappedDocs = CategoryDto.fromMany(result.docs);
-    return {
-      ...result,
-      docs: mappedDocs,
-    };
+    return PaginatedCategoryDto.from(result);
+    // const mappedDocs = CategoryDto.fromMany(result.docs);
+    // return {
+    //   ...result,
+    //   docs: mappedDocs,
+    // };
   }
 
   /**
@@ -77,10 +78,6 @@ export class CategoryService {
    * @param data - Partial category input data
    */
   async update(id: string, data: UpdateCategoryDto) {
-    if (!id || !Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid Category ID format');
-    }
-
     const category = await this.repo.findByIdOrThrow(id);
 
     if (data.name && data.name !== category.name) {
@@ -99,9 +96,6 @@ export class CategoryService {
    * @param id - Category ID
    */
   async delete(id: string) {
-    if (!id || !Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid category ID format');
-    }
     await this.repo.findByIdOrThrow(id);
     const productCount = await this.productRepo.count({ category: id });
     if (productCount > 0) {

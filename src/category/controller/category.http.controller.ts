@@ -8,14 +8,14 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { CategoryService } from './category.service';
+import { CategoryService } from '../service';
 import {
   CategoryDto,
   CategoryQueryDto,
   CreateCategoryDto,
   PaginatedCategoryDto,
   UpdateCategoryDto,
-} from './dto';
+} from '../dto';
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,

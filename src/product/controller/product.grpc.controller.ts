@@ -5,10 +5,10 @@ import {
   PaginatedProductDto,
   CreateProductDto,
   GrpcUpdateProductDto,
-} from './dto';
+} from '../dto';
 import { GrpcMethod } from '@nestjs/microservices';
 import { Controller } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { ProductService } from '../service/product.service';
 import { runRpcMethod } from 'src/common/helpers/run-rpc-method';
 import { Status } from 'src/common/dto/app.response';
 

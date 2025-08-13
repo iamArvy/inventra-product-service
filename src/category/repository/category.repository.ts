@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Category, CategoryDocument } from 'src/category/category.schema';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  Category,
+  CategoryDocument,
+} from 'src/category/schema/category.schema';
 import { FilterQuery, PaginateModel, PaginateOptions, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UpdateCategoryDto } from './dto';
+import { UpdateCategoryDto } from '../dto';
 
 @Injectable()
 export class CategoryRepository {
@@ -15,6 +22,10 @@ export class CategoryRepository {
   }
 
   findById(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid Category ID format');
+    }
+
     return this.model.findById(id).exec();
   }
 

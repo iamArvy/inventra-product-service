@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CategoryGrpcController } from './category.grpc.controller';
-import { CategoryService } from './category.service';
-import { CategoryRepository } from './category.repository';
-import { Category, CategorySchema } from './category.schema';
+import { CategoryService } from './service';
+import { CategoryRepository } from './repository';
+import { Category, CategorySchema } from './schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CategoryHttpController } from './category.http.controller';
-import { Product, ProductSchema } from 'src/product/product.schema';
-import { ProductRepository } from 'src/product/product.repository';
+import { CategoryHttpController, CategoryGrpcController } from './controller';
+import { Product, ProductSchema } from 'src/product/schema';
+import { ProductRepository } from 'src/product/repository';
 
 @Module({
   imports: [
