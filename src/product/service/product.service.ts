@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import {
   CreateProductDto,
+  PaginatedProductDto,
   ProductDto,
   ProductQueryDto,
   UpdateProductDto,
@@ -112,11 +113,7 @@ export class ProductService {
       };
     }
     const result = await this.repo.list(filter, options);
-    const mappedDocs = ProductDto.fromMany(result.docs);
-    return {
-      ...result,
-      docs: mappedDocs,
-    };
+    return PaginatedProductDto.from(result);
   }
 
   /**
@@ -172,9 +169,9 @@ export class ProductService {
     }
     await this.repo.softDelete(id);
     this.logger.log(`Product ${id} deleted`);
+    this.event.deleted(id);
     return { success: true };
   }
 
-  // add events
   // implement createMany and deleteMany
 }

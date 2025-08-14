@@ -14,7 +14,7 @@ export class ProductEvent {
     this.rmq.emit(ProductEvents.PRODUCT_UPDATED, { id, data });
   }
 
-  deactivated(id: string) {
+  deleted(id: string) {
     this.rmq.emit(ProductEvents.PRODUCT_DELETED, { id });
   }
 }

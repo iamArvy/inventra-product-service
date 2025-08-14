@@ -70,11 +70,6 @@ export class CategoryService {
 
     const result = await this.repo.list(filter, options);
     return PaginatedCategoryDto.from(result);
-    // const mappedDocs = CategoryDto.fromMany(result.docs);
-    // return {
-    //   ...result,
-    //   docs: mappedDocs,
-    // };
   }
 
   /**

@@ -45,7 +45,7 @@ export class ProductHttpController {
   @Put('create')
   create(
     @Body('storeId') id: string,
-    @Body('data') data: CreateProductDto,
+    @Body() data: CreateProductDto,
   ): Promise<ProductDto> {
     return this.service.create(data);
   }

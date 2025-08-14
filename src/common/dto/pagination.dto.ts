@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import { PaginateResult } from 'mongoose';
 // Allowed sort orders for number fields
@@ -32,36 +32,47 @@ export class PaginationDto {
 
 export class PaginatedDto<T> implements PaginateResult<T> {
   @ApiProperty({ type: [Object] })
+  @Expose()
   docs: T[];
 
   @ApiProperty()
+  @Expose()
   totalDocs: number;
 
   @ApiProperty()
+  @Expose()
   limit: number;
 
   @ApiProperty()
+  @Expose()
   page?: number;
 
   @ApiProperty()
+  @Expose()
   totalPages: number;
 
   @ApiProperty()
+  @Expose()
   pagingCounter: number;
 
   @ApiProperty()
+  @Expose()
   hasPrevPage: boolean;
 
   @ApiProperty()
+  @Expose()
   hasNextPage: boolean;
 
   @ApiProperty({ nullable: true })
+  @Expose()
   prevPage?: number | null;
 
   @ApiProperty({ nullable: true })
+  @Expose()
   nextPage?: number | null;
 
   @ApiProperty({ nullable: true })
+  @Expose()
   offset: number;
 
   [customLabel: string]: any; // this is the index signature
