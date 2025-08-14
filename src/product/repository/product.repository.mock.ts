@@ -6,6 +6,6 @@ export const mockProductRepository = () => ({
   findByStoreIdAndSku: jest.fn(),
   list: jest.fn(),
   update: jest.fn(),
-  delete: jest.fn(),
+  softDelete: jest.fn(),
   count: jest.fn(),
 });

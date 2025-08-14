@@ -1,4 +1,4 @@
-import { RabbitmqService } from './rabbitmq.service';
+import { RMQService } from './rmq.service';
 import { Global, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
@@ -26,8 +26,8 @@ import { ConfigService } from '@nestjs/config';
       },
     ]),
   ],
-  providers: [RabbitmqService],
-  exports: [RabbitmqService],
+  providers: [RMQService],
+  exports: [RMQService],
 })
 @Global()
-export class MessagingModule {}
+export class RMQModule {}

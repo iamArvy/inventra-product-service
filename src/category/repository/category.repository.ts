@@ -1,39 +1,21 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Category,
   CategoryDocument,
 } from 'src/category/schema/category.schema';
-import { FilterQuery, PaginateModel, PaginateOptions, Types } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UpdateCategoryDto } from '../dto';
+import { MongoRepository } from 'src/common/repositories/mongo.repository';
 
 @Injectable()
-export class CategoryRepository {
+export class CategoryRepository extends MongoRepository<
+  CategoryDocument,
+  Category
+> {
   constructor(
-    @InjectModel(Category.name) private model: PaginateModel<CategoryDocument>,
-  ) {}
-
-  create(data: Category) {
-    return this.model.create(data);
-  }
-
-  findById(id: string) {
-    if (!id || !Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid Category ID format');
-    }
-
-    return this.model.findById(id).exec();
-  }
-
-  async findByIdOrThrow(id: string | Types.ObjectId) {
-    return this.model
-      .findById(id)
-      .orFail(new NotFoundException('Category not found'))
-      .exec();
+    @InjectModel(Category.name) model: PaginateModel<CategoryDocument>,
+  ) {
+    super(model);
   }
 
   findByName(store_id: string, name: string) {
@@ -53,17 +35,5 @@ export class CategoryRepository {
       })
       .orFail(new NotFoundException('Category not found'))
       .exec();
-  }
-
-  list(filter: FilterQuery<Category>, options: PaginateOptions) {
-    return this.model.paginate(this.model.find(filter), options);
-  }
-
-  update(id: string, data: UpdateCategoryDto) {
-    return this.model.findByIdAndUpdate(id, data, { new: true }).exec();
-  }
-
-  delete(id: string) {
-    return this.model.findByIdAndDelete(id).exec();
   }
 }

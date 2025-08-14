@@ -36,6 +36,18 @@ async function bootstrap() {
       },
     },
   });
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RMQ_URL ?? 'amqp://user:password@localhost:5672'],
+      exchange: 'app_exchange',
+      exchangeType: 'topic',
+      routingKey: '#',
+      queue: 'product_queue',
+      queueOptions: { durable: true },
+      wildcards: true,
+    },
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -8,6 +8,7 @@ import { SortOrder } from 'src/common/dto';
 import { ProductDto, ProductSortBy } from '../dto';
 import { ProductDocument } from '../schema';
 import { mockCategoryRepository } from 'src/category/repository';
+import { mockProductEvent, ProductEvent } from '../event';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -25,6 +26,10 @@ describe('ProductService', () => {
         {
           provide: CategoryRepository,
           useFactory: mockCategoryRepository,
+        },
+        {
+          provide: ProductEvent,
+          useFactory: mockProductEvent,
         },
       ],
     }).compile();
@@ -207,7 +212,7 @@ describe('ProductService', () => {
 
     it('should delete successfully', async () => {
       productRepo.findByIdOrThrow.mockResolvedValueOnce({} as any);
-      productRepo.delete.mockResolvedValueOnce({ success: true } as any);
+      productRepo.softDelete.mockResolvedValueOnce({ success: true } as any);
       const result = await service.delete(new Types.ObjectId().toString());
       expect(result).toEqual({ success: true });
     });

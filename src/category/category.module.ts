@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CategoryHttpController, CategoryGrpcController } from './controller';
 import { Product, ProductSchema } from 'src/product/schema';
 import { ProductRepository } from 'src/product/repository';
+import { CategoryEvent } from './event';
 
 @Module({
   imports: [
@@ -15,6 +16,11 @@ import { ProductRepository } from 'src/product/repository';
     ]),
   ],
   controllers: [CategoryGrpcController, CategoryHttpController],
-  providers: [CategoryService, CategoryRepository, ProductRepository],
+  providers: [
+    CategoryService,
+    CategoryRepository,
+    ProductRepository,
+    CategoryEvent,
+  ],
 })
 export class CategoryModule {}

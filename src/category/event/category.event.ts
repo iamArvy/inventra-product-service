@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { RabbitmqService } from 'src/messaging/rabbitmq.service';
+import { RMQService } from 'src/rmq';
 import { CategoryEvents } from './category.keys';
 import { CategoryDto } from 'src/category/dto';
 
 @Injectable()
 export class CategoryEvent {
-  constructor(private readonly rmq: RabbitmqService) {}
+  constructor(private readonly rmq: RMQService) {}
   created(data: CategoryDto) {
     this.rmq.emit(CategoryEvents.CATEGORY_CREATED, data);
   }

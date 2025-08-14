@@ -10,12 +10,14 @@ import { FilterQuery, Types } from 'mongoose';
 import { Product } from '../schema';
 import { SortOrder } from 'src/common/dto';
 import { CategoryRepository } from 'src/category/repository';
+import { ProductEvent } from '../event';
 
 @Injectable()
 export class ProductService {
   constructor(
     private repo: ProductRepository,
     private categoryRepo: CategoryRepository,
+    private event: ProductEvent,
   ) {}
 
   private readonly logger = new Logger(ProductService.name);
@@ -34,13 +36,16 @@ export class ProductService {
     if (!category || category.storeId !== storeId) {
       throw new BadRequestException('Category does not exist');
     }
-    const product = await this.repo.create({
-      ...rest,
-      storeId,
-      category: category._id,
-    });
+    const product = ProductDto.from(
+      await this.repo.create({
+        ...rest,
+        storeId,
+        category: category._id,
+      }),
+    );
     this.logger.log(`Product ${product.id} Created in store ${storeId}`);
-    return ProductDto.from(product);
+    this.event.created(product);
+    return product;
   }
 
   /**
@@ -149,6 +154,7 @@ export class ProductService {
       category: categoryId,
     });
     this.logger.log(`Product ${id} updated`);
+    this.event.updated(id, data);
     return { success: true };
   }
 
@@ -164,7 +170,7 @@ export class ProductService {
     if (product.deletedAt) {
       throw new BadRequestException('Product already deleted');
     }
-    await this.repo.delete(id);
+    await this.repo.softDelete(id);
     this.logger.log(`Product ${id} deleted`);
     return { success: true };
   }
